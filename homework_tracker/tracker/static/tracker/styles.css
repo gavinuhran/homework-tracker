@@ -1,0 +1,130 @@
+body {
+    position: absolute;
+    width: 1240px;
+    height: auto;
+    left: calc(50% - 1240px/2);
+    top: 68px;
+    padding-bottom: 50px;
+}
+
+.create-button {
+    position: absolute;
+    width: 310px;
+    height: 154px;
+    left: 0px;
+    top: 0px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+}
+
+.update-button {
+    position: absolute;
+    width: 310px;
+    height: 154px;
+    left: 0px;
+    top: 194px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+}
+
+.delete-button {
+    position: absolute;
+    width: 310px;
+    height: 154px;
+    left: 0px;
+    top: 388px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+}
+
+h1 {
+    position: absolute;
+    width: auto;
+    height: 55px;
+    left: calc(50% - 145px/2 + 0.5px);
+    top: calc(50% - 55px/2 + 0.5px);
+    
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 48px;
+    line-height: 55px;
+    
+    color: #000000;
+}
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    
+    position: absolute;
+    width: 830px;
+    height: 967px;
+    right: 0px;
+    top: 0px;    
+}
+
+.task {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    
+    position: static;
+    width: 830px;
+    left: 0px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+    
+    /* Inside Auto Layout */
+    
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0px 0px 20px 0px;
+}
+
+h2 {
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 36px;
+    line-height: 41px;
+    
+    color: #000000;
+}
+
+h3 {    
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 28px;
+    /* identical to box height */
+    
+    
+    color: #000000;
+}
+
+p {
+    position: static;
+    width: 790px;
+    height: 42px;
+    left: calc(50% - 790px/2);
+    top: 185px;
+    
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 21px;
+    
+    color: #000000;
+    margin: 10px 0px 0px 0px;
+}

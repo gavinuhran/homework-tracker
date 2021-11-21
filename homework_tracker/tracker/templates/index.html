@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,15 +7,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'tracker/styles.css' %}">
     <title>Homework Tracker</title>
 </head>
 <body>
-    {% for task in tasks %}
-    <h4>{{ task.title }}</h4>
-    <h3>{{ task.due_date }}</h3>
-    <h1>{{ task.desc }}</h1>
-    <h3>{{ task.status }}</h3>
-    <h3>{{ task.total_time }}</h3>
-    {% endfor %}
+    <a href="" class="create-button">
+        <h1>Create</h1>
+    </a>
+    <a href="" class="update-button">
+        <h1>Update</h1>
+    </a>
+    <a href="" class="delete-button">
+        <h1>Delete</h1>
+    </a>
+    
+    <div class="tasks">
+        {% for task in tasks %}
+        <div class="task">
+            <h2>{{ task.title }}</h2>
+            <h3><strong>Project:</strong> {{ task.project }}</h3>
+            <h3><strong>Due Date:</strong> {{ task.due_date }}</h3>
+            <h3><strong>Status:</strong> {{ task.status }}</h3>
+            <h3><strong>Total Time:</strong> {{ task.total_time }} hours</h3>
+            <br>
+            <p>{{ task.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
