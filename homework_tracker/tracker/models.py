@@ -1,5 +1,4 @@
 from django.db import models
-import uuid
 # Create your models here.
 class Task(models.Model):
     STATUSES = (
@@ -8,7 +7,7 @@ class Task(models.Model):
         ('Complete', 'Complete'),
     )
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
     project = models.CharField(default="placeholder", max_length=100)
     due_date = models.DateField()

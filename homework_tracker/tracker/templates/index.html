@@ -25,6 +25,7 @@
         {% for task in tasks %}
         <div class="task">
             <h2>{{ task.title }}</h2>
+            <h3>{{ task.id }}</h3>
             <h3><strong>Project:</strong> {{ task.project }}</h3>
             <h3><strong>Due Date:</strong> {{ task.due_date }}</h3>
             <h3><strong>Status:</strong> {{ task.status }}</h3>

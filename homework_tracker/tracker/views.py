@@ -24,6 +24,6 @@ def create(request):
         task.save()
 
         tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
-        return render(request, 'index.html', {'tasks': tasks})
+        return render(request, 'create.html', {'tasks': tasks})
     else:
         return render(request, 'create.html', {})
