@@ -4,7 +4,7 @@ import datetime
 
 # Create your views here.
 def index(request):
-    tasks = Task.objects.all()
+    tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
     return render(request, 'index.html', {'tasks': tasks})
 
 def create(request):
@@ -23,7 +23,16 @@ def create(request):
         task.total_time = request.POST.get('total_time')
         task.save()
 
-        tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
-        return render(request, 'create.html', {'tasks': tasks})
+        return render(request, 'create.html', {})
     else:
         return render(request, 'create.html', {})
+
+def delete(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        Task.objects.get(id=id).delete()
+
+        tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
+        return render(request, 'delete.html', {})
+    else:
+        return render(request, 'delete.html', {})
