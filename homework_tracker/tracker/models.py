@@ -14,3 +14,8 @@ class Task(models.Model):
     description = models.CharField(max_length=500)
     status = models.CharField(max_length=50, choices=STATUSES)
     total_time = models.IntegerField()
+
+class TimeEntry(models.Model):
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    task = models.IntegerField() # User enters task id
