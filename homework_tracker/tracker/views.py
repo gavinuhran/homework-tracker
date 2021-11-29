@@ -1,16 +1,18 @@
 from django.shortcuts import render
-from .models import Task
+from .models import Task, TimeEntry
 import datetime
 
 id = 0
 
 # Create your views here.
 def index(request):
+    # Renders home page
     tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
     return render(request, 'index.html', {'tasks': tasks})
 
 def create(request):
-    if request.method == 'POST':
+    
+    if request.method == 'POST': # When user clicks "Create Assignment" button, a new task is created and saved in the local database
         task = Task()
         task.title = request.POST.get('title')
         task.project = request.POST.get('project')
@@ -26,35 +28,37 @@ def create(request):
         task.save()
 
         return render(request, 'create.html', {})
-    else:
+    else: # Otherwise the form is continually rendered as the user enters data for a task
         return render(request, 'create.html', {})
 
 def delete(request):
-    if request.method == 'POST':
+    if request.method == 'POST': # When user clicks "Delete Assignment", the given task_id is deleted from the local database
         id = int(request.POST.get('id'))
         for task in Task.objects.all():
             if task.id == id:
                 task.delete()
                 return render(request, 'delete.html', {})
-        return render(request, 'delete_error.html', {})
+
+        return render(request, 'delete_error.html', {}) # If user enters an invalid ID an error message is displayed
         
-    else:
+    else: # Otherwise the form is continually rendered as the user enters data for a task to be deleted
         return render(request, 'delete.html', {})
 
 def update(request):
     global id
-    if request.method == 'POST':
-        if request.POST['action'] == 'id':
+    if request.method == 'POST': 
+        if request.POST['action'] == 'id': # When the user clicks the "View Assignment" button, the page that allows the user to update the data for a given task_id is rendered
             id = int(request.POST.get('id'))
             for task in Task.objects.all():
                 if task.id == id:
                     task = Task.objects.get(id=id)
                     date = datetime.date.strftime(task.due_date, "%m/%d/%Y")
-                    return render(request, 'update.html', {'task': task, 'date': date})
-            return render(request, 'id_error.html', {})
+                    return render(request, 'update.html', {'task': task, 'date': date}) # Renders the form for the given task_id with the field prefilled with the task data
+
+            return render(request, 'id_error.html', {}) # Displays an error message if an incorrect id is given
 
             
-        elif request.POST['action'] == 'update':
+        elif request.POST['action'] == 'update': # When the user clicks the "Update Assignment" button, the task is saved with the new given data
             task = Task.objects.get(id=id)
             task.title = request.POST.get('title')
             task.project = request.POST.get('project')
@@ -70,5 +74,22 @@ def update(request):
             task.save()
 
             return render(request, 'update.html', {})
-    else:
+    else: # Otherwise the form is continually rendered as the user enters data for a task_id to be updated
         return render(request, 'id.html', {})
+
+def timer(request):
+    start_time = None
+    if request.method == 'POST':
+        if request.POST['action'] == 'start':
+            start_time = datetime.now()
+            return render(request, 'timer.html', {})
+            
+        elif request.POST['action'] == 'stop':
+            time_entry = TimeEntry()
+            time_entry.start_time = start_time
+            time_entry.end_time = datetime.now()
+            time_entry.task = request.POST.get('task_id')
+
+            return render(request, 'timer.html', {})
+    else:
+        return render(request, 'timer.html', {})
