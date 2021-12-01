@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Task, TimeEntry
-import datetime
+from datetime import datetime
 
 id = 0
 
@@ -79,10 +79,21 @@ def update(request):
 
 def timer(request):
     start_time = None
+    task = None
+
     if request.method == 'POST':
-        if request.POST['action'] == 'start':
+        if request.POST['action'] == 'id': # When the user clicks the "View Assignment" button, the page that allows the user to update the data for a given task_id is rendered
+            id = int(request.POST.get('id'))
+            for task in Task.objects.all():
+                if task.id == id:
+                    task = Task.objects.get(id=id)
+                    return render(request, 'timer.html', {'task': task, 'state': 0}) # State 0 = start state
+
+            return render(request, 'id_error.html', {}) # Displays an error message if an incorrect id is given
+
+        elif request.POST['action'] == 'start':
             start_time = datetime.now()
-            return render(request, 'timer.html', {})
+            return render(request, 'timer.html', {'task': task, 'state': 1}) # After hitting start, state 1 = timer running state
             
         elif request.POST['action'] == 'stop':
             time_entry = TimeEntry()
@@ -90,6 +101,6 @@ def timer(request):
             time_entry.end_time = datetime.now()
             time_entry.task = request.POST.get('task_id')
 
-            return render(request, 'timer.html', {})
+            return render(request, 'timer.html', {'task': task, 'state': 2}) # After stopping the timer, state 2 = timer ended state
     else:
-        return render(request, 'timer.html', {})
+        return render(request, 'id.html', {})
