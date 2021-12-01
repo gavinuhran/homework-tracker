@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from .models import Task, TimeEntry
-from datetime import datetime
+import datetime
 
 id = 0
+start_time = None
 
 # Create your views here.
 def index(request):
@@ -78,8 +79,9 @@ def update(request):
         return render(request, 'id.html', {})
 
 def timer(request):
-    start_time = None
+    global start_time
     task = None
+    global id
 
     if request.method == 'POST':
         if request.POST['action'] == 'id': # When the user clicks the "View Assignment" button, the page that allows the user to update the data for a given task_id is rendered
@@ -92,14 +94,15 @@ def timer(request):
             return render(request, 'id_error.html', {}) # Displays an error message if an incorrect id is given
 
         elif request.POST['action'] == 'start':
-            start_time = datetime.now()
+            start_time = datetime.datetime.now()
             return render(request, 'timer.html', {'task': task, 'state': 1}) # After hitting start, state 1 = timer running state
             
         elif request.POST['action'] == 'stop':
             time_entry = TimeEntry()
             time_entry.start_time = start_time
-            time_entry.end_time = datetime.now()
-            time_entry.task = request.POST.get('task_id')
+            time_entry.end_time = datetime.datetime.now()
+            time_entry.task = id
+            time_entry.save()
 
             return render(request, 'timer.html', {'task': task, 'state': 2}) # After stopping the timer, state 2 = timer ended state
     else:
