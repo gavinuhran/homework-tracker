@@ -24,7 +24,30 @@
         <h1>Timer</h1>
     </a>
 
-    <div class="tasks">
+    <script>
+        function times() {
+            var x = document.getElementById("tasks");
+            x.style.display = "none";
+            var x = document.getElementById("times");
+            x.style.display = "block";
+        }
+        function tasks() {
+            var x = document.getElementById("tasks");
+            x.style.display = "block";
+            var x = document.getElementById("times");
+            x.style.display = "none";
+        }
+    </script>
+
+    <button class="tasks-button" onclick="tasks()">
+        <h2 class="tasks-button-text">Tasks</h2>
+    </button>
+
+    <button class="times-button" onclick="times()">
+        <h2 class="times-button-text">Time Entries</h2>
+    </button>
+
+    <div class="tasks" id="tasks">
         {% for task in tasks %}
         <div class="task">
             <h2>{{ task.title }}</h2>
@@ -35,6 +58,18 @@
             <h3><strong>Total Time:</strong> {{ task.total_time }} hours</h3>
             <br>
             <p>{{ task.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="times" id="times">
+        {% for time in times %}
+        <div class="time">
+            <h2>{{ time.task }}</h2>
+            <h3><strong>ID:</strong> {{ task.id }}</h3>
+            <h3><strong>Time Elapsed:</strong>Temporary Placeholder</h3>
+            <h3><strong>Start Time:</strong> {{ task.start_time }}</h3>
+            <h3><strong>End Time:</strong> {{ task.end_time }}</h3>
         </div>
         {% endfor %}
     </div>
