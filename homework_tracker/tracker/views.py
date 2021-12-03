@@ -9,7 +9,8 @@ start_time = None
 def index(request):
     # Renders home page
     tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
-    return render(request, 'index.html', {'tasks': tasks})
+    times = TimeEntry.objects.all()
+    return render(request, 'index.html', {'tasks': tasks, 'times': times})
 
 def create(request):
     

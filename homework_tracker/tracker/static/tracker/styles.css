@@ -67,6 +67,67 @@ h1 {
     color: #000000;
 }
 
+.tasks-button {
+    position: absolute;
+    width: 405px;
+    height: 67px;
+    left: 410px;
+    top: 0px;
+    
+    background: #E7E7E7;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.tasks-button-text {
+    position: absolute;
+    width: 82px;
+    height: 37px;
+    left: calc(50% - 82px/2 + 0.5px);
+    top: calc(50% - 37px/2);
+    
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 32px;
+    line-height: 37px;
+    /* identical to box height */
+    
+    text-align: center;
+    
+    color: #000000;    
+}
+
+.times-button {
+    position: absolute;
+    width: 405px;
+    height: 67px;
+    left: 835px;
+    top: 0px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+}
+
+.times-button-text {
+    position: absolute;
+    width: 179px;
+    height: 37px;
+    left: calc(50% - 179px/2 + 1px);
+    top: calc(50% - 37px/2);
+    
+    font-family: Arial;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 32px;
+    line-height: 37px;
+    /* identical to box height */
+    
+    text-align: center;
+    
+    color: #000000;    
+}
+
 .tasks {
     display: flex;
     flex-direction: column;
@@ -77,7 +138,7 @@ h1 {
     width: 830px;
     height: 967px;
     right: 0px;
-    top: 0px;    
+    top: 87px;    
 }
 
 .task {
@@ -138,4 +199,39 @@ p {
     
     color: #000000;
     margin: 10px 0px 0px 0px;
+}
+
+.times {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    
+    position: absolute;
+    width: 830px;
+    height: 967px;
+    right: 0px;
+    top: 87px;
+    display: none;
+}
+
+.time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    
+    position: static;
+    width: 830px;
+    left: 0px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+    
+    /* Inside Auto Layout */
+    
+    flex: none;
+    align-self: stretch;
+    flex-grow: 0;
+    margin: 0px 0px 20px 0px;
 }
