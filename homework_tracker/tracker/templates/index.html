@@ -66,10 +66,10 @@
         {% for time in times %}
         <div class="time">
             <h2>{{ time.task }}</h2>
-            <h3><strong>ID:</strong> {{ task.id }}</h3>
+            <h3><strong>ID:</strong> {{ time.id }}</h3>
             <h3><strong>Time Elapsed:</strong>Temporary Placeholder</h3>
-            <h3><strong>Start Time:</strong> {{ task.start_time }}</h3>
-            <h3><strong>End Time:</strong> {{ task.end_time }}</h3>
+            <h3><strong>Start Time:</strong> {{ time.start_time }}</h3>
+            <h3><strong>End Time:</strong> {{ time.end_time }}</h3>
         </div>
         {% endfor %}
     </div>
