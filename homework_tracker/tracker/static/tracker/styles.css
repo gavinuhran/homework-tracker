@@ -23,7 +23,7 @@ body {
     width: 310px;
     height: 154px;
     left: 0px;
-    top: 194px;
+    top: 174px;
     
     background: #E7E7E7;
     border-radius: 10px;
@@ -34,7 +34,18 @@ body {
     width: 310px;
     height: 154px;
     left: 0px;
-    top: 388px;
+    top: 348px;
+    
+    background: #E7E7E7;
+    border-radius: 10px;
+}
+
+.timer-button {
+    position: absolute;
+    width: 310px;
+    height: 154px;
+    left: 0px;
+    top: 522px;
     
     background: #E7E7E7;
     border-radius: 10px;
