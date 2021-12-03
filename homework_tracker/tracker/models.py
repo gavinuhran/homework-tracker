@@ -16,6 +16,7 @@ class Task(models.Model):
     total_time = models.IntegerField()
 
 class TimeEntry(models.Model):
+    id = models.AutoField(primary_key=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     task = models.IntegerField() # User enters task id
