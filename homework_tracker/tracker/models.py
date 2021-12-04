@@ -19,4 +19,6 @@ class TimeEntry(models.Model):
     id = models.AutoField(primary_key=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    time_elapsed = models.CharField(default="placeholder", max_length=200)
     task = models.IntegerField() # User enters task id
+    task_title = models.CharField(default="placeholder", max_length=200)

@@ -11,30 +11,60 @@
     <title>Homework Tracker</title>
 </head>
 <body>
-    <a href="/create/" class="create-button">
-        <h1>Create</h1>
+    <a href="/create/" id="create-task" class="create-button">
+        <h1>Create Task</h1>
     </a>
-    <a href="/update/" class="update-button">
-        <h1>Update</h1>
+    <a href="/update/" id="update-task" class="update-button">
+        <h1>Update Task</h1>
     </a>
-    <a href="/delete/" class="delete-button">
-        <h1>Delete</h1>
+    <a href="/delete/" id="delete-task" class="delete-button">
+        <h1>Delete Task</h1>
     </a>
-    <a href="/timer/" class="timer-button">
+    <a href="/timer/" style="display: none" id="create-timer" class="create-button">
         <h1>Timer</h1>
+    </a>
+    <a href="/update-timer/" style="display: none" id="update-timer" class="update-button">
+        <h1>Update Time</h1>
+    </a>
+    <a href="/delete-timer/" style="display: none" id="delete-timer" class="delete-button">
+        <h1>Delete Time</h1>
     </a>
 
     <script>
         function times() {
             var x = document.getElementById("tasks");
             x.style.display = "none";
+            var x = document.getElementById("create-task");
+            x.style.display = "none";
+            var x = document.getElementById("update-task");
+            x.style.display = "none";
+            var x = document.getElementById("delete-task");
+            x.style.display = "none";
             var x = document.getElementById("times");
+            x.style.display = "block";
+            var x = document.getElementById("create-timer");
+            x.style.display = "block";
+            var x = document.getElementById("update-timer");
+            x.style.display = "block";
+            var x = document.getElementById("delete-timer");
             x.style.display = "block";
         }
         function tasks() {
             var x = document.getElementById("tasks");
             x.style.display = "block";
+            var x = document.getElementById("create-task");
+            x.style.display = "block";
+            var x = document.getElementById("update-task");
+            x.style.display = "block";
+            var x = document.getElementById("delete-task");
+            x.style.display = "block";
             var x = document.getElementById("times");
+            x.style.display = "none";
+            var x = document.getElementById("create-timer");
+            x.style.display = "none";
+            var x = document.getElementById("update-timer");
+            x.style.display = "none";
+            var x = document.getElementById("delete-timer");
             x.style.display = "none";
         }
     </script>
@@ -55,7 +85,6 @@
             <h3><strong>Project:</strong> {{ task.project }}</h3>
             <h3><strong>Due Date:</strong> {{ task.due_date }}</h3>
             <h3><strong>Status:</strong> {{ task.status }}</h3>
-            <h3><strong>Total Time:</strong> {{ task.total_time }} hours</h3>
             <br>
             <p>{{ task.description }}</p>
         </div>
@@ -65,9 +94,9 @@
     <div class="times" id="times">
         {% for time in times %}
         <div class="time">
-            <h2>{{ time.task }}</h2>
+            <h2>{{ time.task_title }}</h2>
             <h3><strong>ID:</strong> {{ time.id }}</h3>
-            <h3><strong>Time Elapsed:</strong>Temporary Placeholder</h3>
+            <h3><strong>Time Elapsed:</strong> {{ time.time_elapsed }}</h3>
             <h3><strong>Start Time:</strong> {{ time.start_time }}</h3>
             <h3><strong>End Time:</strong> {{ time.end_time }}</h3>
         </div>
