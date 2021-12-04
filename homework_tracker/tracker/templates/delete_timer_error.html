@@ -16,16 +16,18 @@
     </a>
     <div class="container">
         <div class="form p-5 mb-4 rounded-3">
-            <h3>Enter an ID to update</h3>
+            <h3>Delete a Time Entry</h3>
             <br>
             <form id="playInputForm" method='POST'>
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="timeInput"  class="form-label">ID</label>
+                    <label for="timeInput"  class="form-label">Time Entry ID</label>
                     <input name="id" type="number" class="form-control" id="timeInput">
                 </div>
                 <br>
-                <button type="submit" name="action" value="id" class="btn btn-primary my-3">Next</button>
+                <h4 style="color: red">Error: Invalid ID entered</h4>
+                <br>
+                <button type="submit"a class="btn btn-primary my-3">Delete Time Entry</button>
             </form>
         </div>
     </div>
