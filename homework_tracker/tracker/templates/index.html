@@ -20,6 +20,9 @@
     <a href="/delete/" id="delete-task" class="delete-button">
         <h1>Delete Task</h1>
     </a>
+    <a href="" id="task-dash" class="dash-button">
+        <h1>Task Dashboard</h1>
+    </a>
     <a href="/timer/" style="display: none" id="create-timer" class="create-button">
         <h1>Timer</h1>
     </a>
@@ -28,6 +31,9 @@
     </a>
     <a href="/delete-timer/" style="display: none" id="delete-timer" class="delete-button">
         <h1>Delete Time</h1>
+    </a>
+    <a href="/time-dashboard/" style="display: none" id="time-dash" class="dash-button">
+        <h1>Time Dashboard</h1>
     </a>
 
     <script>
@@ -40,6 +46,8 @@
             x.style.display = "none";
             var x = document.getElementById("delete-task");
             x.style.display = "none";
+            var x = document.getElementById("task-dash");
+            x.style.display = "none";
             var x = document.getElementById("times");
             x.style.display = "block";
             var x = document.getElementById("create-timer");
@@ -47,6 +55,8 @@
             var x = document.getElementById("update-timer");
             x.style.display = "block";
             var x = document.getElementById("delete-timer");
+            x.style.display = "block";
+            var x = document.getElementById("time-dash");
             x.style.display = "block";
         }
         function tasks() {
@@ -58,6 +68,8 @@
             x.style.display = "block";
             var x = document.getElementById("delete-task");
             x.style.display = "block";
+            var x = document.getElementById("task-dash");
+            x.style.display = "block";
             var x = document.getElementById("times");
             x.style.display = "none";
             var x = document.getElementById("create-timer");
@@ -65,6 +77,8 @@
             var x = document.getElementById("update-timer");
             x.style.display = "none";
             var x = document.getElementById("delete-timer");
+            x.style.display = "none";
+            var x = document.getElementById("time-dash");
             x.style.display = "none";
         }
     </script>

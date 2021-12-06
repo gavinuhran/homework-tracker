@@ -40,23 +40,22 @@ body {
     border-radius: 10px;
 }
 
-.timer-button {
+.dash-button {
     position: absolute;
     width: 310px;
     height: 154px;
     left: 0px;
-    top: 0px;
+    top: 522px;
     
     background: #E7E7E7;
     border-radius: 10px;
-    display: none;
 }
 
 h1 {
     position: absolute;
     width: auto;
     height: 55px;
-    left: calc(50% - 200px/2 + 0.5px);
+    left: 20px;
     top: calc(50% - 55px/2 + 0.5px);
     
     font-family: Arial;

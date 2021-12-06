@@ -1,9 +1,18 @@
 from django.shortcuts import render
 from .models import Task, TimeEntry
 import datetime
+import pytz
 
 id = 0
 start_time = None
+
+utc=pytz.UTC
+
+week_end = utc.localize(datetime.datetime.now())
+week_start = week_end - datetime.timedelta(7)
+
+month_start = utc.localize(datetime.datetime.now()).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+month_end = (month_start + datetime.timedelta(32)).replace(day=1)
 
 # Create your views here.
 def index(request):
@@ -152,6 +161,19 @@ def update_timer(request):
                 end = time.end_time.strftime("%m/%d/%Y, %H:%M:%S")
                 return render(request, 'update_timer_error.html', {'time': time, 'start': start, 'end': end})
             
+            duration = time.end_time - time.start_time
+            seconds = duration.total_seconds()
+            hours = int(divmod(seconds, 3600)[0])
+            minutes = int(divmod(seconds, 60)[0])
+            seconds = int(seconds % 60)
+
+            if hours:
+                time.time_elapsed = f'{hours} hours, {minutes} minutes, {seconds} seconds'
+            elif minutes:
+                time.time_elapsed = f'{minutes} minutes, {seconds} seconds'
+            else:
+                time.time_elapsed = f'{seconds} seconds'
+            
             time.save()
 
             return render(request, 'update_timer.html', {})
@@ -170,3 +192,308 @@ def delete_timer(request):
         
     else: # Otherwise the form is continually rendered as the user enters data for a task to be deleted
         return render(request, 'delete_timer.html', {})
+
+
+def time_dashboard(request):
+    global week_start, week_end, month_start, month_end, utc
+
+    if request.method == 'POST': 
+        if request.POST['action'] == 'week': 
+            # nums = [MM, DD, YYYY]
+            nums = [int(x) for x in request.POST.get('date').split('/')]
+            date = datetime.datetime(nums[2], nums[0], nums[1])
+            week_start = utc.localize(date)
+            week_end = week_start + datetime.timedelta(7)
+
+            tasks_week = {}
+            projects_week = {}
+            tasks_month = {}
+            projects_month = {}
+
+            for time in TimeEntry.objects.all():
+                duration = time.end_time - time.start_time
+                task = Task.objects.get(id=time.task)
+
+                if time.start_time > week_start and time.end_time < week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += duration
+                    else:
+                        tasks_week[task] = duration
+
+                    if task.project in projects_week:
+                        projects_week[task.project] += duration
+                    else:
+                        projects_week[task.project] = duration
+                elif time.start_time < week_start and time.end_time > week_start and time.end_time < week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += time.end_time - week_start
+                    else:
+                        tasks_week[task] = time.end_time - week_start
+
+                    if task.project in projects_week:
+                        projects_week[task.project] += time.end_time - week_start
+                    else:
+                        projects_week[task.project] = time.end_time - week_start
+                elif time.start_time > week_start and time.start_time < week_end and time.end_time > week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += week_end - time.start_time
+                    else:
+                        tasks_week[task] = week_end - time.start_time
+
+                    if task.project in projects_week:
+                        projects_week[task.project] += week_end - time.start_time
+                    else:
+                        projects_week[task.project] = week_end - time.start_time
+                elif time.start_time < week_start and time.end_time > week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += week_end - week_start
+                    else:
+                        tasks_week[task] = week_end - week_start
+                    
+                    if task.project in projects_week:
+                        projects_week[task.project] += week_end - week_start
+                    else:
+                        projects_week[task.project] = week_end - week_start
+
+                if time.start_time > month_start and time.end_time < month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += duration
+                    else:
+                        tasks_month[task] = duration
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += duration
+                    else:
+                        projects_month[task.project] = duration
+                elif time.start_time < month_start and time.end_time > month_start and time.end_time < month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += time.end_time - month_start
+                    else:
+                        tasks_month[task] = time.end_time - month_start
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += time.end_time - month_start
+                    else:
+                        projects_month[task.project] = time.end_time - month_start
+                elif time.start_time > month_start and time.start_time < month_end and time.end_time > month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += month_end - time.start_time
+                    else:
+                        tasks_month[task] = month_end - time.start_time
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += month_end - time.start_time
+                    else:
+                        projects_month[task.project] = month_end - time.start_time
+                elif time.start_time < month_start and time.end_time > month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += month_end - month_start
+                    else:
+                        tasks_month[task] = month_end - month_start
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += month_end - month_start
+                    else:
+                        projects_month[task.project] = month_end - month_start
+
+            return render(request, 'time_dashboard.html', {'tasks_week': tasks_week, 'tasks_month': tasks_month, 'projects_week': projects_week, 'projects_month': projects_month})
+
+        elif request.POST['action'] == 'month':
+            # nums = [MM, YYYY]
+            nums = [int(x) for x in request.POST.get('month').split('/')]
+            month_start = utc.localize(datetime.datetime(nums[1], nums[0], 1))
+            month_end = (month_start + datetime.timedelta(32)).replace(day=1)
+
+            tasks_week = {}
+            projects_week = {}
+            tasks_month = {}
+            projects_month = {}
+
+            for time in TimeEntry.objects.all():
+                duration = time.end_time - time.start_time
+                task = Task.objects.get(id=time.task)
+
+                if time.start_time > week_start and time.end_time < week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += duration
+                    else:
+                        tasks_week[task] = duration
+
+                    if task.project in projects_week:
+                        projects_week[task.project] += duration
+                    else:
+                        projects_week[task.project] = duration
+                elif time.start_time < week_start and time.end_time > week_start and time.end_time < week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += time.end_time - week_start
+                    else:
+                        tasks_week[task] = time.end_time - week_start
+
+                    if task.project in projects_week:
+                        projects_week[task.project] += time.end_time - week_start
+                    else:
+                        projects_week[task.project] = time.end_time - week_start
+                elif time.start_time > week_start and time.start_time < week_end and time.end_time > week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += week_end - time.start_time
+                    else:
+                        tasks_week[task] = week_end - time.start_time
+
+                    if task.project in projects_week:
+                        projects_week[task.project] += week_end - time.start_time
+                    else:
+                        projects_week[task.project] = week_end - time.start_time
+                elif time.start_time < week_start and time.end_time > week_end:
+                    if task in tasks_week:
+                        tasks_week[task] += week_end - week_start
+                    else:
+                        tasks_week[task] = week_end - week_start
+                    
+                    if task.project in projects_week:
+                        projects_week[task.project] += week_end - week_start
+                    else:
+                        projects_week[task.project] = week_end - week_start
+
+                if time.start_time > month_start and time.end_time < month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += duration
+                    else:
+                        tasks_month[task] = duration
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += duration
+                    else:
+                        projects_month[task.project] = duration
+                elif time.start_time < month_start and time.end_time > month_start and time.end_time < month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += time.end_time - month_start
+                    else:
+                        tasks_month[task] = time.end_time - month_start
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += time.end_time - month_start
+                    else:
+                        projects_month[task.project] = time.end_time - month_start
+                elif time.start_time > month_start and time.start_time < month_end and time.end_time > month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += month_end - time.start_time
+                    else:
+                        tasks_month[task] = month_end - time.start_time
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += month_end - time.start_time
+                    else:
+                        projects_month[task.project] = month_end - time.start_time
+                elif time.start_time < month_start and time.end_time > month_end:
+                    if task in tasks_month:
+                        tasks_month[task] += month_end - month_start
+                    else:
+                        tasks_month[task] = month_end - month_start
+
+                    if task.project in projects_month:
+                        projects_month[task.project] += month_end - month_start
+                    else:
+                        projects_month[task.project] = month_end - month_start
+
+            return render(request, 'time_dashboard.html', {'tasks_week': tasks_week, 'tasks_month': tasks_month, 'projects_week': projects_week, 'projects_month': projects_month})
+
+    else:
+        week_end = utc.localize(datetime.datetime.now())
+        week_start = week_end - datetime.timedelta(7)
+
+        month_start = utc.localize(datetime.datetime.now()).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        month_end = (month_start + datetime.timedelta(32)).replace(day=1)
+
+        tasks_week = {}
+        projects_week = {}
+        tasks_month = {}
+        projects_month = {}
+
+
+        for time in TimeEntry.objects.all():
+            duration = time.end_time - time.start_time
+            task = Task.objects.get(id=time.task)
+
+            if time.start_time > week_start and time.end_time < week_end:
+                if task in tasks_week:
+                    tasks_week[task] += duration
+                else:
+                    tasks_week[task] = duration
+
+                if task.project in projects_week:
+                    projects_week[task.project] += duration
+                else:
+                    projects_week[task.project] = duration
+            elif time.start_time < week_start and time.end_time > week_start and time.end_time < week_end:
+                if task in tasks_week:
+                    tasks_week[task] += time.end_time - week_start
+                else:
+                    tasks_week[task] = time.end_time - week_start
+
+                if task.project in projects_week:
+                    projects_week[task.project] += time.end_time - week_start
+                else:
+                    projects_week[task.project] = time.end_time - week_start
+            elif time.start_time > week_start and time.start_time < week_end and time.end_time > week_end:
+                if task in tasks_week:
+                    tasks_week[task] += week_end - time.start_time
+                else:
+                    tasks_week[task] = week_end - time.start_time
+
+                if task.project in projects_week:
+                    projects_week[task.project] += week_end - time.start_time
+                else:
+                    projects_week[task.project] = week_end - time.start_time
+            elif time.start_time < week_start and time.end_time > week_end:
+                if task in tasks_week:
+                    tasks_week[task] += week_end - week_start
+                else:
+                    tasks_week[task] = week_end - week_start
+
+                if task.project in projects_week:
+                    projects_week[task.project] += week_end - week_start
+                else:
+                    projects_week[task.project] = week_end - week_start
+
+            if time.start_time > month_start and time.end_time < month_end:
+                if task in tasks_month:
+                    tasks_month[task] += duration
+                else:
+                    tasks_month[task] = duration
+
+                if task.project in projects_month:
+                    projects_month[task.project] += duration
+                else:
+                    projects_month[task.project] = duration
+            elif time.start_time < month_start and time.end_time > month_start and time.end_time < month_end:
+                if task in tasks_month:
+                    tasks_month[task] += time.end_time - month_start
+                else:
+                    tasks_month[task] = time.end_time - month_start
+
+                if task.project in projects_month:
+                    projects_month[task.project] += time.end_time - month_start
+                else:
+                    projects_month[task.project] = time.end_time - month_start
+            elif time.start_time > month_start and time.start_time < month_end and time.end_time > month_end:
+                if task in tasks_month:
+                    tasks_month[task] += month_end - time.start_time
+                else:
+                    tasks_month[task] = month_end - time.start_time
+
+                if task.project in projects_month:
+                    projects_month[task.project] += month_end - time.start_time
+                else:
+                    projects_month[task.project] = month_end - time.start_time
+            elif time.start_time < month_start and time.end_time > month_end:
+                if task in tasks_month:
+                    tasks_month[task] += month_end - month_start
+                else:
+                    tasks_month[task] = month_end - month_start
+
+                if task.project in projects_month:
+                    projects_month[task.project] += month_end - month_start
+                else:
+                    projects_month[task.project] = month_end - month_start
+
+        return render(request, 'time_dashboard.html', {'tasks_week': tasks_week, 'tasks_month': tasks_month, 'projects_week': projects_week, 'projects_month': projects_month})
