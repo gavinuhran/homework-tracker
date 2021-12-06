@@ -9,5 +9,6 @@ urlpatterns = [
     path('timer/', views.timer),
     path('update-timer/', views.update_timer),
     path('delete-timer/', views.delete_timer),
-    path('time-dashboard/', views.time_dashboard)
+    path('time-dashboard/', views.time_dashboard),
+    path('task-dashboard/', views.task_dashboard)
 ]

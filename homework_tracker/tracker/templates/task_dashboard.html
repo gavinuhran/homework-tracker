@@ -1,0 +1,29 @@
+<form id="form-week" method='POST'>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="dateInput"  class="form-label">Week Date</label>
+        <input name="date" type="text" class="form-control" id="dateInput" placeholder="MM/DD/YYYY">
+    </div>
+    <br>
+    <button type="submit" name="action" value="week" class="btn btn-primary my-3">Search</button>
+</form>
+
+<h1>Tasks</h1>
+{% for task, time in tasks_week_avg.items %}
+<h1>{{ task.title }}: {{ time }}</h1>
+{% endfor %}
+
+<form id="form-month" method='POST'>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="dateInput"  class="form-label">Month</label>
+        <input name="month" type="text" class="form-control" id="dateInput" placeholder="MM/YYYY">
+    </div>
+    <br>
+    <button type="submit" name="action" value="month" class="btn btn-primary my-3">Search</button>
+</form>
+
+<h1>Tasks</h1>
+{% for task, time in tasks_month_avg.items %}
+<h1>{{ task.title }}: {{ time }}</h1>
+{% endfor %}
