@@ -497,3 +497,101 @@ def time_dashboard(request):
                     projects_month[task.project] = month_end - month_start
 
         return render(request, 'time_dashboard.html', {'tasks_week': tasks_week, 'tasks_month': tasks_month, 'projects_week': projects_week, 'projects_month': projects_month})
+
+def task_dashboard(request):
+    global week_start, week_end, month_start, month_end, utc
+
+    if request.method == 'POST': 
+        if request.POST['action'] == 'week':
+            nums = [int(x) for x in request.POST.get('date').split('/')]
+            date = datetime.datetime(nums[2], nums[0], nums[1])
+            week_start = utc.localize(date)
+            week_end = week_start + datetime.timedelta(7)
+
+        elif request.POST['action'] == 'month':
+            nums = [int(x) for x in request.POST.get('month').split('/')]
+            month_start = utc.localize(datetime.datetime(nums[1], nums[0], 1))
+            month_end = (month_start + datetime.timedelta(32)).replace(day=1)
+
+    tasks_week = {}
+    tasks_month = {}
+    tasks_week_count = {}
+    tasks_month_count = {}
+    tasks_week_avg = {}
+    tasks_month_avg = {}
+    
+    for time in TimeEntry.objects.all():
+            duration = time.end_time - time.start_time
+            task = Task.objects.get(id=time.task)
+
+            if time.start_time > week_start and time.end_time < week_end:
+                if task in tasks_week:
+                    tasks_week[task] += duration
+                    tasks_week_count[task] += 1
+                else:
+                    tasks_week[task] = duration
+                    tasks_week_count[task] = 1
+
+            elif time.start_time < week_start and time.end_time > week_start and time.end_time < week_end:
+                if task in tasks_week:
+                    tasks_week[task] += time.end_time - week_start
+                    tasks_week_count[task] += 1
+                else:
+                    tasks_week[task] = time.end_time - week_start
+                    tasks_week_count[task] = 1
+
+            elif time.start_time > week_start and time.start_time < week_end and time.end_time > week_end:
+                if task in tasks_week:
+                    tasks_week[task] += week_end - time.start_time
+                    tasks_week_count[task] += 1
+                else:
+                    tasks_week[task] = week_end - time.start_time
+                    tasks_week_count[task] = 1
+
+            elif time.start_time < week_start and time.end_time > week_end:
+                if task in tasks_week:
+                    tasks_week[task] += week_end - week_start
+                    tasks_week_count[task] += 1
+                else:
+                    tasks_week[task] = week_end - week_start
+                    tasks_week_count[task] = 1
+
+            if time.start_time > month_start and time.end_time < month_end:
+                if task in tasks_month:
+                    tasks_month[task] += duration
+                    tasks_month_count[task] += 1
+                else:
+                    tasks_month[task] = duration
+                    tasks_month_count[task] = 1
+
+            elif time.start_time < month_start and time.end_time > month_start and time.end_time < month_end:
+                if task in tasks_month:
+                    tasks_month[task] += time.end_time - month_start
+                    tasks_month_count[task] += 1
+                else:
+                    tasks_month[task] = time.end_time - month_start
+                    tasks_month_count[task] = 1
+
+            elif time.start_time > month_start and time.start_time < month_end and time.end_time > month_end:
+                if task in tasks_month:
+                    tasks_month[task] += month_end - time.start_time
+                    tasks_month_count[task] += 1
+                else:
+                    tasks_month[task] = month_end - time.start_time
+                    tasks_month_count[task] = 1
+
+            elif time.start_time < month_start and time.end_time > month_end:
+                if task in tasks_month:
+                    tasks_month[task] += month_end - month_start
+                    tasks_month_count[task] += 1
+                else:
+                    tasks_month[task] = month_end - month_start
+                    tasks_month_count[task] = 1
+
+    for task, time in tasks_week.items():
+       tasks_week_avg[task] = datetime.timedelta(seconds=int(time.total_seconds() / tasks_week_count[task]))
+
+    for task, time in tasks_month.items():
+       tasks_month_avg[task] = datetime.timedelta(seconds=int(time.total_seconds() / tasks_month_count[task]))
+
+    return render(request, 'task_dashboard.html', {'tasks_week_avg': tasks_week_avg, 'tasks_month_avg': tasks_month_avg})
