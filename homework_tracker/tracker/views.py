@@ -19,7 +19,10 @@ def index(request):
     # Renders home page
     tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
     times = TimeEntry.objects.all()
-    return render(request, 'index.html', {'tasks': tasks, 'times': times})
+    time_elapsed = {}
+    for time in times:
+        time_elapsed[time] = (time.end_time - time.start_time)
+    return render(request, 'index.html', {'tasks': tasks, 'times': times, 'time_elapsed': time_elapsed})
 
 def create(request):
     
