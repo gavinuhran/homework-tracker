@@ -26,6 +26,7 @@
     </form>
 
     <div class="week-stats">
+        <h2><strong>{{ week_start }} - {{ week_end }}</strong></h2>
         <h2>Tasks</h2>
         {% for task, time in tasks_week.items %}
         <h4><u>{{ task.title }}:</u> {{ time }}</h4>
@@ -48,6 +49,7 @@
     </form>
 
     <div class="month-stats">
+        <h2><strong>{{ month }}</strong></h2>
         <h2>Tasks</h2>
         {% for task, time in tasks_month.items %}
         <h4><u>{{ task.title }}:</u> {{ time }}</h4>
