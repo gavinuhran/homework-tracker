@@ -1,29 +1,54 @@
-<form id="form-week" method='POST'>
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="dateInput"  class="form-label">Week Date</label>
-        <input name="date" type="text" class="form-control" id="dateInput" placeholder="MM/DD/YYYY">
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'tracker/time_dash.css' %}">
+    <title>Homework Tracker</title>
+</head>
+<body>
+    <a href="/" class="home-button">
+        <h1>Return to Home</h1>
+    </a>
+
+    <form id="form-week" method='POST'>
+        {% csrf_token %}
+        <div class="week-input">
+            <label for="dateInput"  class="form-label">Week Date</label>
+            <input name="date" type="text" class="form-control" id="dateInput" placeholder="MM/DD/YYYY">
+        </div>
+        <br>
+        <button type="submit" name="action" value="week" class="btn btn-primary my-3 week-search">Search</button>
+    </form>
+
+    <div class="week-stats">
+        <h2>Tasks</h2>
+        {% for task, time in tasks_week_avg.items %}
+        <h4><u>{{ task.title }}:</u> {{ time }}</h4>
+        {% endfor %}
+        <br>
     </div>
-    <br>
-    <button type="submit" name="action" value="week" class="btn btn-primary my-3">Search</button>
-</form>
 
-<h1>Tasks</h1>
-{% for task, time in tasks_week_avg.items %}
-<h1>{{ task.title }}: {{ time }}</h1>
-{% endfor %}
+    <form id="form-month" method='POST'>
+        {% csrf_token %}
+        <div class="month-input">
+            <label for="dateInput"  class="form-label">Month</label>
+            <input name="month" type="text" class="form-control" id="dateInput" placeholder="MM/YYYY">
+        </div>
+        <br>
+        <button type="submit" name="action" value="month" class="btn btn-primary my-3 month-search">Search</button>
+    </form>
 
-<form id="form-month" method='POST'>
-    {% csrf_token %}
-    <div class="form-group">
-        <label for="dateInput"  class="form-label">Month</label>
-        <input name="month" type="text" class="form-control" id="dateInput" placeholder="MM/YYYY">
+    <div class="month-stats">
+        <h2>Tasks</h2>
+        {% for task, time in tasks_month_avg.items %}
+        <h4><u>{{ task.title }}:</u> {{ time }}</h4>
+        {% endfor %}
+        <br>
     </div>
-    <br>
-    <button type="submit" name="action" value="month" class="btn btn-primary my-3">Search</button>
-</form>
-
-<h1>Tasks</h1>
-{% for task, time in tasks_month_avg.items %}
-<h1>{{ task.title }}: {{ time }}</h1>
-{% endfor %}
+</body>
+</html>
