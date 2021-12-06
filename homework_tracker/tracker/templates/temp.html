@@ -1,14 +1,37 @@
-{% load static %}
+<form id="form-week" method='POST'>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="dateInput"  class="form-label">Week Date</label>
+        <input name="date" type="text" class="form-control" id="dateInput" placeholder="MM/DD/YYYY">
+    </div>
+    <br>
+    <button type="submit" name="action" value="week" class="btn btn-primary my-3">Search</button>
+</form>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homework Tracker</title>
-</head>
-<body>
-    
-</body>
-</html>
+<h1>Tasks</h1>
+{% for task, time in tasks_week.items %}
+<h1>{{ task.title }}: {{ time }}</h1>
+{% endfor %}
+<h1>Projects</h1>
+{% for project, time in projects_week.items %}
+<h1>{{ project.title }}: {{ time }}</h1>
+{% endfor %}
+
+<form id="form-month" method='POST'>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="dateInput"  class="form-label">Month</label>
+        <input name="month" type="text" class="form-control" id="dateInput" placeholder="MM/YYYY">
+    </div>
+    <br>
+    <button type="submit" name="action" value="month" class="btn btn-primary my-3">Search</button>
+</form>
+
+<h1>Tasks</h1>
+{% for task1, time1 in tasks_month.items %}
+<h1>{{ task1.title }}: {{ time1 }}</h1>
+{% endfor %}
+<h1>Projects</h1>
+{% for project1, time1 in projects_month.items %}
+<h1>{{ project1.title }}: {{ time1 }}</h1>
+{% endfor %}
