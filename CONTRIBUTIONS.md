@@ -1,0 +1,1 @@
+All contributions made to this project were done in a group setting with Gavin, Jake, and Aidan. Because of this, everybody contributed to every aspect of the project because we were constantly working together.
