@@ -20,6 +20,7 @@ def index(request):
     tasks = sorted(Task.objects.all(), key=lambda x: x.due_date)
     times = TimeEntry.objects.all()
     time_elapsed = {}
+    # Create dictionary to store elapsed times
     for time in times:
         time_elapsed[time] = (time.end_time - time.start_time)
     return render(request, 'index.html', {'tasks': tasks, 'times': times, 'time_elapsed': time_elapsed})
@@ -114,7 +115,7 @@ def timer(request):
             start_time = datetime.datetime.now()
             return render(request, 'timer.html', {'task': task, 'state': 1}) # After hitting start, state 1 = timer running state
             
-        elif request.POST['action'] == 'stop':
+        elif request.POST['action'] == 'stop': # If stop do math to calculate elapsed time, start time, and end time
             time_entry = TimeEntry()
             time_entry.start_time = start_time
             time_entry.end_time = datetime.datetime.now()
@@ -222,11 +223,13 @@ def time_dashboard(request):
     projects_week = {}
     tasks_month = {}
     projects_month = {}
-
+    # Long series of if statements for both weeks and months that cover every
+    # case of a timeentry intersecting a month or week
     for time in TimeEntry.objects.all():
         duration = time.end_time - time.start_time
         task = Task.objects.get(id=time.task)
 
+        # If a time entry completely in a week
         if time.start_time > week_start and time.end_time < week_end:
             if task in tasks_week:
                 tasks_week[task] += duration
@@ -237,6 +240,7 @@ def time_dashboard(request):
                 projects_week[task.project] += duration
             else:
                 projects_week[task.project] = duration
+        # If time entry has start before week and end is in week
         elif time.start_time < week_start and time.end_time > week_start and time.end_time < week_end:
             if task in tasks_week:
                 tasks_week[task] += time.end_time - week_start
@@ -247,6 +251,7 @@ def time_dashboard(request):
                 projects_week[task.project] += time.end_time - week_start
             else:
                 projects_week[task.project] = time.end_time - week_start
+        # If start in week and end after week
         elif time.start_time > week_start and time.start_time < week_end and time.end_time > week_end:
             if task in tasks_week:
                 tasks_week[task] += week_end - time.start_time
@@ -257,6 +262,7 @@ def time_dashboard(request):
                 projects_week[task.project] += week_end - time.start_time
             else:
                 projects_week[task.project] = week_end - time.start_time
+        # If start before week and end after week
         elif time.start_time < week_start and time.end_time > week_end:
             if task in tasks_week:
                 tasks_week[task] += week_end - week_start
@@ -267,7 +273,7 @@ def time_dashboard(request):
                 projects_week[task.project] += week_end - week_start
             else:
                 projects_week[task.project] = week_end - week_start
-
+        # Same as the if statements for week, just for month time frame
         if time.start_time > month_start and time.end_time < month_end:
             if task in tasks_month:
                 tasks_month[task] += duration
@@ -312,8 +318,10 @@ def time_dashboard(request):
     return render(request, 'time_dashboard.html', {'tasks_week': tasks_week, 'tasks_month': tasks_month, 'projects_week': projects_week, 'projects_month': projects_month, 'week_start': week_start.strftime("%m/%d/%Y"), 'week_end': week_end.strftime("%m/%d/%Y"), 'month': month_start.strftime("%b %Y")})
 
 def task_dashboard(request):
+    # Use globals so that week doesn't revert to default if month changes and vice versa
     global week_start, week_end, month_start, month_end, utc
 
+    # Update week/month queries from buttons
     if request.method == 'POST': 
         if request.POST['action'] == 'week':
             nums = [int(x) for x in request.POST.get('date').split('/')]
@@ -326,6 +334,8 @@ def task_dashboard(request):
             month_start = utc.localize(datetime.datetime(nums[1], nums[0], 1))
             month_end = (month_start + datetime.timedelta(32)).replace(day=1)
 
+
+    # Dictionaries needed to calc averages
     tasks_week = {}
     tasks_month = {}
     tasks_week_count = {}
@@ -333,10 +343,12 @@ def task_dashboard(request):
     tasks_week_avg = {}
     tasks_month_avg = {}
     
+    # Go through time entries and add for week/month
     for time in TimeEntry.objects.all():
             duration = time.end_time - time.start_time
             task = Task.objects.get(id=time.task)
-
+            
+            # If time entry in week
             if time.start_time > week_start and time.end_time < week_end:
                 if task in tasks_week:
                     tasks_week[task] += duration
@@ -345,6 +357,7 @@ def task_dashboard(request):
                     tasks_week[task] = duration
                     tasks_week_count[task] = 1
 
+            # If start before week start and end in week
             elif time.start_time < week_start and time.end_time > week_start and time.end_time < week_end:
                 if task in tasks_week:
                     tasks_week[task] += time.end_time - week_start
@@ -353,6 +366,7 @@ def task_dashboard(request):
                     tasks_week[task] = time.end_time - week_start
                     tasks_week_count[task] = 1
 
+            # If start in week and end is more than week end
             elif time.start_time > week_start and time.start_time < week_end and time.end_time > week_end:
                 if task in tasks_week:
                     tasks_week[task] += week_end - time.start_time
@@ -361,6 +375,7 @@ def task_dashboard(request):
                     tasks_week[task] = week_end - time.start_time
                     tasks_week_count[task] = 1
 
+            # If start before week and end after week
             elif time.start_time < week_start and time.end_time > week_end:
                 if task in tasks_week:
                     tasks_week[task] += week_end - week_start
@@ -368,7 +383,8 @@ def task_dashboard(request):
                 else:
                     tasks_week[task] = week_end - week_start
                     tasks_week_count[task] = 1
-
+            
+            # Same if statements as above, just for month
             if time.start_time > month_start and time.end_time < month_end:
                 if task in tasks_month:
                     tasks_month[task] += duration
@@ -401,6 +417,7 @@ def task_dashboard(request):
                     tasks_month[task] = month_end - month_start
                     tasks_month_count[task] = 1
 
+    # Calculate Averages
     for task, time in tasks_week.items():
        tasks_week_avg[task] = datetime.timedelta(seconds=int(time.total_seconds() / tasks_week_count[task]))
 
