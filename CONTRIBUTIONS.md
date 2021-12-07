@@ -1,1 +1,1 @@
-All contributions made to this project were done in a group setting with Gavin, Jake, and Aidan. Because of this, everybody contributed to every aspect of the project because we were constantly working together.
+All contributions made to this project were done in a group setting with Gavin, Jake, and Aidan. Because of this, everybody contributed to every aspect of the project because we were constantly working together. Most of the Git commits are also from Gavin's github user because we chose to use his computer when we met up and worked on the project.
